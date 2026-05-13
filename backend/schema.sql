@@ -14,7 +14,7 @@ CREATE TABLE users (
 -- Employees table
 CREATE TABLE employees (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE ON DELETE CASCADE,
+    user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     designation VARCHAR(100),
     department VARCHAR(100),
     manager_id INTEGER REFERENCES employees(id) ON DELETE SET NULL,

@@ -42,8 +42,14 @@ const getEmployeeById = async (req, res) => {
       return res.status(404).json({ error: 'Employee not found' });
     }
 
+    const employee = result.rows[0];
+
+    if (req.user.role === 'employee' && Number(req.user.id) !== Number(employee.user_id)) {
+      return res.status(403).json({ error: 'Forbidden: access to this employee is denied' });
+    }
+
     res.json({
-      employee: result.rows[0],
+      employee,
     });
   } catch (err) {
     console.error('Error fetching employee:', err.message);

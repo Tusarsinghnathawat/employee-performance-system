@@ -4,7 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
-const db = require('../config/db');
+const authService = require('../services/authService');
 const { generateToken } = require('../utils/jwt');
 
 /**
@@ -21,7 +21,7 @@ const register = async (req, res) => {
     }
 
     // Check if user exists
-    const existingUser = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    const existingUser = await authService.findUserByEmail(email);
     
     if (existingUser.rows.length > 0) {
       return res.status(400).json({ error: 'User with this email already exists' });
@@ -31,10 +31,12 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const result = await db.query(
-      'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-      [name, email, hashedPassword, role || 'employee']
-    );
+    const result = await authService.createUser({
+      name,
+      email,
+      passwordHash: hashedPassword,
+      role: role || 'employee',
+    });
 
     const user = result.rows[0];
 
@@ -66,7 +68,7 @@ const login = async (req, res) => {
     }
 
     // Find user
-    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await authService.findUserByEmail(email);
     
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
@@ -109,10 +111,7 @@ const getMe = async (req, res) => {
     const userId = req.user.id;
 
     // Fetch user info
-    const result = await db.query(
-      'SELECT id, name, email, role, created_at FROM users WHERE id = $1',
-      [userId]
-    );
+    const result = await authService.getUserById(userId);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });

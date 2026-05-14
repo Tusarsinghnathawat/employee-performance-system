@@ -1,10 +1,10 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { Box } from '@mui/material'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
-import MainLayout from '../layouts/MainLayout.jsx'
+import DashboardLayout from '../layouts/DashboardLayout.jsx'
 
-function ProtectedRoute() {
+function ProtectedRoute({ children, allowedRoles = [] }) {
   const { user, loading } = useAuth()
   const location = useLocation()
 
@@ -20,11 +20,11 @@ function ProtectedRoute() {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  )
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/unauthorized" replace />
+  }
+
+  return <DashboardLayout>{children}</DashboardLayout>
 }
 
 export default ProtectedRoute

@@ -124,7 +124,7 @@ function EmployeeDetailsPage() {
                 <Typography variant="subtitle2" color="text.secondary">
                   Job Title
                 </Typography>
-                <Typography>{employee.title || '-'}</Typography>
+                <Typography>{employee.designation || '-'}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" color="text.secondary">

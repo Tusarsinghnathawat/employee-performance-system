@@ -131,7 +131,7 @@ function EmployeeListPage() {
                         <TableCell>{employee.name}</TableCell>
                         <TableCell>{employee.email}</TableCell>
                         <TableCell>{employee.role}</TableCell>
-                        <TableCell>{employee.title || '-'}</TableCell>
+                        <TableCell>{employee.designation || '-'}</TableCell>
                         <TableCell>{employee.department || '-'}</TableCell>
                         <TableCell align="right">
                           <IconButton component={RouterLink} to={`/employees/${employeeId}`}>

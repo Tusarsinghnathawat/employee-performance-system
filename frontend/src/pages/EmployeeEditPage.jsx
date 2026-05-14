@@ -43,7 +43,7 @@ function EmployeeEditPage() {
         setForm({
           name: found.name || '',
           email: found.email || '',
-          title: found.title || '',
+          title: found.designation || '',
           department: found.department || '',
           role: found.role || 'employee',
         })

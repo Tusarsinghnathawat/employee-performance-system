@@ -19,10 +19,13 @@ locals {
     for file in fileset(format("%s/../backend", path.module), "*/pom.xml") :
     dirname(file) if !startswith(dirname(file), "_") && !startswith(dirname(file), ".")
   ]
-  nodejs_dirs = [
-    for file in fileset(format("%s/../backend", path.module), "*/package.json") :
-    dirname(file) if !startswith(dirname(file), "_") && !startswith(dirname(file), ".")
-  ]
+  nodejs_dirs = concat(
+    fileexists(format("%s/../backend/package.json", path.module)) ? [""] : [],
+    [
+      for file in fileset(format("%s/../backend", path.module), "*/package.json") :
+      dirname(file) if !startswith(dirname(file), "_") && !startswith(dirname(file), ".")
+    ]
+  )
   python_dirs = [
     for file in fileset(format("%s/../backend", path.module), "*/function.py") :
     dirname(file) if !startswith(dirname(file), "_") && !startswith(dirname(file), ".")
@@ -42,8 +45,8 @@ locals {
     }
   }
   nodejs_names = {
-    for name in local.nodejs_dirs : name => {
-      name             = name
+    for name in local.nodejs_dirs : (name == "" ? "backend" : name) => {
+      name             = name == "" ? "backend" : name
       arch             = "x86_64"
       runtime          = "nodejs24.x"
       handler          = "index.handler"

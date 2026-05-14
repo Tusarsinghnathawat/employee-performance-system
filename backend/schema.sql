@@ -27,9 +27,7 @@ CREATE TABLE employees (
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
     employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
-    reviewer_id INTEGER REFERENCES employees(id) ON DEL
-    
-    ETE SET NULL,
+    reviewer_id INTEGER REFERENCES employees(id) ON DELETE SET NULL,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     feedback TEXT,
     review_period VARCHAR(50),
